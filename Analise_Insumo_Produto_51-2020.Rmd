@@ -1,0 +1,934 @@
+---
+title: "Analisando o Setor de Logística dos Transportes no ano de 2020 pela ótica da Matriz Insumo-Produto"
+output: 
+  html_document:
+    highlight: textmate
+    includes:
+      in_header: cabecalho.html
+    theme: flatly
+    number_sections: yes
+    toc: yes
+    toc_float:
+      collapsed: yes
+      smooth_scroll: yes
+---
+  
+<br>
+  
+<p style="text-align: center;">Disciplina de **Análise Insumo-Produto**, semestre 2023-2.</p>
+<p style="text-align: center;">Professores: **Dra. Milene Takasago**[^1] e **Dr. João Maria de Oliveira**[^2]</p>
+<p style="text-align: center;">Aluno: **Raphael Vieira dos Santos**[^3], matrícula: **190152974**</p>
+[^1]: Professora Adjunta do Departamento de Economia da Universidade de Brasília, [lattes](http://lattes.cnpq.br/6248088807156359)  
+[^2]: Economista Técnico de Planejamento e Pesquisa no Instituto de Pesquisa Econômica Aplicada, [lattes](http://lattes.cnpq.br/4249182156660583)  
+[^3]: Graduando em Ciências Econômicas pela Universidade de Brasília e Técnico de Engenharia na INFRA S.A. [lattes](http://lattes.cnpq.br/8605814289354373)  
+  
+<br>
+  
+```{r estabelecendo local de trabalho, warning=FALSE, message=FALSE, echo=FALSE}
+rm(list = ls())
+setwd("C:/Users/raphael.vieira/OneDrive - Valec/Área de Trabalho/UNB/00 - GRADUAÇÃO ECONOMIA/2023-2 - ANÁLISE INSUMO PRODUTO/Aulas R/Analise_Insumo_Produto")
+```
+  
+<br>
+  
+# Introdução  
+  
+<p style="text-align: justify;">A dinâmica econômica do setor de transportes desempenha um papel crucial no desenvolvimento econômico, conectando diversos segmentos produtivos e influenciando o desempenho global de uma economia. Este trabalho busca explorar os impactos específicos do setor de logística na cadeia produtiva da economia brasileira, empregando a metodologia de análise insumo-produto explorada pelo Prof. Joaquim José Martins Guilhoto (2009)[^4].</p>  
+  
+[^4]: GUILHOTO, J. J. M. Análise de Insumo-Produto: Teoria e Fundamentos. FEA, Universidade de São Paulo, 2009.
+  
+<p style="text-align: justify;">O tema central deste trabalho é a análise dos impactos do setor de “Transporte Armazenagem e Correio” na economia brasileira, utilizando a metodologia de análise insumo-produto. Concentramos nossa atenção nas implicações econômicas específicas do transporte de mercadorias, envolvendo todos modais, conforme disposto pelas Tabelas de Recursos e Usos do IBGE, abrangendo 51 setores econômicos para o ano de 2020.</p>  
+  
+<p style="text-align: justify;">O estudo se propõe a fornecer uma visão breve das relações interindustriais, destacando as ramificações da cadeia logística para a economia brasileira. O objetivo principal é observar os impactos do setor na economia brasileira durante o ano de 2020.</p>  
+  
+<p style="text-align: justify;">As Tabelas de Recursos e Usos (TRU’s) de 51 setores para o ano em questão proporcionam uma base de dados robusta e atualizada, permitindo-nos analisar, de maneira abrangente, como o setor de “Transporte Armazenagem e Correio” afetou e, reciprocamente, como suas dinâmicas reverberaram em outros segmentos da economia nacional.</p>  
+  
+<p style="text-align: justify;">A escolha desse período como foco de estudo se justifica pelo papel estratégico que o transporte de cargas desempenhou na manutenção da continuidade econômica. Dessa forma, o presente trabalho se propõe a oferecer uma análise breve das implicações do setor de logística, contribuindo assim para a construção de respostas mais robustas e estratégias econômicas mais resilientes, assim como aprofundar em novos estudos.</p>  
+  
+<p style="text-align: justify;">Para isso propomos analisar a estrutura das relações interindustriais, utilizando índices de ligação propostos por Rasmussen (1952)[^5] e Hirschman (1958)[^6]; e em seguida avaliaremos a intensidade das conexões por meio de índices puros de ligação.</p>  
+  
+[^5]: RASMUSSEN, P. Studies in intersectorial relations. Amsterdam: North Holland, 1956.  
+[^6]: HIRSCHMAN, A. O. The strategy of economic development. New Haven: Yale University Press, 1958  
+
+<br>
+<br>
+  
+# Sobre a Análise Insumo-Produto  
+  
+<p style="text-align: justify;">A análise insumo-produto é uma técnica econômica que permite estudar as interações entre diferentes setores da economia. Ela foi desenvolvida pelo economista Wassily Leontief, que recebeu o Prêmio Nobel de Economia em 1973 por este trabalho. A análise insumo-produto utiliza uma matriz de insumo-produto, que é uma representação tabular das transações econômicas entre diferentes setores em um determinado período de tempo.</p>  
+  
+<p style="text-align: justify;">Cada linha da matriz representa os insumos recebidos por um setor, e cada coluna representa a produção de um setor. A análise insumo-produto permite calcular vários indicadores econômicos, como os multiplicadores de impacto, que medem o efeito de um aumento na produção de um setor sobre a produção total da economia.</p>  
+  
+<p style=“text-align: justify;”>O setor de logística de transportes é uma engrenagem vital na máquina econômica, facilitando o fluxo eficiente de bens e serviços entre indústrias e consumidores. Caracterizado por sua complexidade operacional e interdependência com outros setores, ele desempenha um papel crucial na determinação da competitividade econômica. A eficiência logística pode reduzir os custos de produção e distribuição, melhorar a velocidade e a confiabilidade do fornecimento de bens, e permitir a operação de cadeias de suprimentos just-in-time. Em 2020, o setor de logística de transportes enfrentou desafios sem precedentes devido à pandemia global, mas também desempenhou um papel crucial na manutenção da continuidade econômica, adaptando-se rapidamente às mudanças nas demandas de transporte e padrões de comércio.</p>
+
+<p style=“text-align: justify;”>Na Tabela de Recursos e Usos (TRU) de 51 setores publicada pelo IBGE, o setor “Transporte, Armazenagem e Correio” abrange uma ampla gama de atividades, incluindo transporte de passageiros e de carga por vários modais (rodoviário, ferroviário, aéreo, marítimo, etc.), armazenagem e atividades auxiliares dos transportes, e serviços postais e de correio. Este setor é fundamental para a economia brasileira, pois facilita o comércio interno e externo, conecta mercados, e permite a mobilidade de pessoas e bens. A análise da TRU pode revelar como as mudanças neste setor podem ter efeitos cascata em toda a economia, afetando a produção, o emprego e o crescimento em outros setores.</p> 
+  
+<br>
+<br>
+  
+# Calculando a MIP utilizando a Linguagem R  
+  
+Primeiramente definimos o conjunto de pacotes com os quais trabalharemos o nosso código.  
+  
+```{r lendo pacotes, warning=FALSE, message=FALSE}
+if(!require(dplyr)) install.packages("dplyr", dependencies=TRUE) 
+library(dplyr)
+if(!require(data.table)) install.packages("data.table", dependencies=TRUE) 
+library(data.table)
+if(!require(kableExtra)) install.packages("kableExtra", dependencies=TRUE) 
+library(kableExtra)
+if(!require(knitr)) install.packages("knitr", dependencies=TRUE) 
+library(knitr)
+if(!require(openxlsx)) install.packages("openxlsx", dependencies=TRUE) 
+library(openxlsx)
+if(!require(stargazer)) install.packages("stargazer", dependencies=TRUE)
+library(stargazer)
+if(!require(tidyverse)) install.packages("tidyverse", dependencies=TRUE)
+library(tidyverse)
+
+```
+  
+```{r funcoes, warning=FALSE, message=FALSE, echo=FALSE}
+LeTabela = function(sNomeArquivo, sSheet, nLinhaInicial,
+                    nLinhaFinal,nColunaInicial, nColunaFinal)
+{
+  dSheet = read.xlsx(sNomeArquivo,sSheet, colNames = FALSE, rowNames = FALSE)
+  mMatriz = dSheet[nLinhaInicial:nLinhaFinal,nColunaInicial:nColunaFinal]
+  mMatriz = apply(as.matrix.noquote(mMatriz), 2, as.numeric)
+  return(mMatriz)
+}
+
+named_scatter_plot <- function(x, y, inf_lim, sup_lim, sTitle, vLabels, sXTitle,
+                               sYTitle, sFigName, sCaption="", saveFig=FALSE, nTextLimit=0.045) {
+  if (!saveFig) {
+    return(0)
+  } else {
+    # Creating plot
+    pdf(paste0("Figuras/", sFigName, ".pdf"), width=10, height=6)
+    par(bg="#e6f2ff")
+    
+    # Scatter plot
+    plot(x, y, col="black", pch=16, xlim=c(inf_lim, sup_lim), ylim=c(inf_lim, sup_lim), xlab=sXTitle, ylab=sYTitle, main=sTitle)
+    grid()
+    abline(h=1, col="black", lty=2)
+    abline(v=1, col="black", lty=2)
+    
+    # Point labels
+    for (i in seq_along(vLabels)) {
+      if (abs(1 - x[i]) > nTextLimit) {
+        text(x[i] + 0.012, y[i] - 0.012, vLabels[i])
+      }
+    }
+    
+    # Creating caption
+    mtext(sCaption, side=1, line=0.5, adj=0, cex=1)
+    
+    # Annotating quadrants
+    mtext("Forte encadeamento para trás", side=1, line=2, adj=0, cex=0.8)
+    mtext("Fraco encadeamento", side=1, line=0, adj=0, cex=0.8)
+    mtext("Setor-Chave", side=1, line=2, adj=1, cex=0.8)
+    mtext("Forte encadeamento para frente", side=1, line=0, adj=1, cex=0.8)
+    
+    # Saving plot
+    dev.off()
+  }
+}
+
+```
+  
+<br>
+<br>
+  
+## Definindo as Variáveis de Parâmetros  
+  
+<p style="text-align: justify;">A partir de agora podemos definir as variáveis que utilizaremos como parâmetro. Como trabalharemos com as TRU's de 51 setores e 107 produtos para o ano de 2020, incluímos as variáveis no modelo que identificarão a posição das colunas para as margens de comércio e transportes, assim como os impostos e as variáveis Estoque e Exportação separada por Produtos e Serviços. Definiremos também a posição das linhas respectivas ao Valor Agregado, Valor Bruto da Produção e as ocupações.</p>  
+  
+```{r caracteristicas dos dados, warning=FALSE, message=FALSE}
+# Informações sobre as TRU's e período analisados 
+nAnoMip = 2020
+nSetores = 51
+nProdutos = 107
+
+# Identificação das colunas nas TRU's
+nColunasDemandaFinal <- 6
+nColunaExportacaoProdutos= 1
+nColunaExportacaoServicos= 2
+nColunaEstoque = 7
+nColunaII = 4
+nColunaIPI = 5
+nColunaICMS = 6
+nColunaOI = 7
+nColunaMargemComercio = 2
+nColunaMargemTransporte = 3
+
+# Identificação das linhas nas TRU's
+nLinhasVA <- 12
+nLinhaVBP <- 11
+nLinhaOcupacoes <- 12
+```
+  
+<br>
+<br>
+  
+## Lendo as Tabelas de Recursos e Usos  
+  
+Antes se faz necessário atentarmos a algumas informações importantes:  
+  
+1) Precisamos transformar a tabela de usos de preços de mercado a preços básicos.  
+2) A matriz de produção (ou recursos) informa o que cada indústria (ou setor) da economia produz de cada produto, enquanto a tabela de usos (ou demanda) informa a quantidade de insumos que cada setor utiliza na produção.  
+3) Devemos fazer a combinação das tabelas de recursos e usos (TRU's) de modo que seja possível derivar um sistema que permite uma análise da economia em questão, semelhante ao sistema de matrizes proposto por Leontief.  
+  
+<p style="text-align: justify;">A partir de então, leremos o arquivo "xlsx" contendo as tabelas de recursos e usos, separando as matrizes de oferta, produção, importação, consumo intermediário, demanda final e valor adicionado. Destaque para o Consumo Intermediário, Demanda Final e Valor Adicionado, os quais o IBGE apresenta a preço de mercado, e que na sequência, retiraremos as margens de comércio, transportes, impostos e estoques para guardarmos os valores a preços básicos.</p>  
+  
+```{r importando a TRU, warning=FALSE, message=FALSE}
+# Nome dos arquivos em excel a serem importados para o modelo
+sArquivoRecursos = '51_tab1_2020.xlsx'
+sArquivoUsos = '51_tab2_2020.xlsx'
+
+# Lendo oferta 
+mOferta = LeTabela(sArquivoRecursos,"oferta", 4,110,2,8) 
+
+# Lendo produção 
+mProducao =  LeTabela(sArquivoRecursos,"producao", 4,110,2,52)
+
+# Lendo importação 
+dSheet = read.xlsx(sArquivoRecursos,"importacao", colNames = FALSE, rowNames = FALSE)
+mMatriz = dSheet[4:110,2]
+vImportacao = apply(data.matrix(mMatriz), 2, as.numeric)
+
+# Lendo Consumo Intermediário (matriz de usos a preços de consumidor) 
+dSheet = read.xlsx(sArquivoUsos,"CI", colNames = FALSE, rowNames = FALSE)
+mMatriz = dSheet[4:110,2:52]
+mConsumoIntermediario = apply(as.matrix.noquote(mMatriz), 2, as.numeric)
+
+# Lendo Demanda Final  
+dSheet = read.xlsx(sArquivoUsos,"demanda", colNames = FALSE, rowNames = FALSE)
+mMatriz = dSheet[4:110,2:8]
+mDemandaFinal = apply(as.matrix.noquote(mMatriz), 2, as.numeric)
+
+# Lendo Valor Adicionado  
+dSheet = read.xlsx(sArquivoUsos,"VA", colNames = FALSE, rowNames = FALSE)
+mMatriz = dSheet[4:15,2:52]
+mVA = apply(as.matrix.noquote(mMatriz), 2, as.numeric)
+
+```
+  
+<br>
+<br>
+  
+## Construindo a Análise  
+  
+<p style="text-align: justify;">A tabela de usos nas contas nacionais possuem valores a preço do consumidor (preços de mercado), os quais devem ser estimados a preços básicos, conforme a tabela de recursos. O problema central da estimativa é distribuir os valores totais do imposto e margem.</p>    
+  
+> Oferta Global = Oferta Nacional + Oferta Internacional
+  
+Matematicamente, temos:  
+  
+> Pb = Pm - MgC - MgT - ILLS - I
+  
+Onde:  
+* `Pb` equivale aos preços básicos;  
+* `Pm` equivale aos preços de mercado;  
+* `MgC` e `MgT` equivale às margens de comércio e transporte, respectivamente;  
+* `ILLS` equivale aos impostos líquidos livres de subsídios;  
+* `I` equivalendo a importação.
+  
+```{r, warning=FALSE, message=FALSE}
+# Retirando o Estoque da Demanda Final
+mDemandaFinalSemEstoque = mDemandaFinal
+mDemandaFinalSemEstoque[, nColunaEstoque] <- 0.0
+mConsumoTotalSemEstoque <- cbind(mConsumoIntermediario, mDemandaFinalSemEstoque)
+
+# Calculando o vetor do produto total a partir do consumo total com estoque zerado
+vTotalProduto = rowSums(mConsumoTotalSemEstoque)
+
+# Calculando a Matriz de Distribuição
+mDistribuicao <- mConsumoTotalSemEstoque / vTotalProduto
+mDistribuicao[is.na(mDistribuicao)] = 0
+
+# Calculando a Matriz para IPI
+mValorIPI  = mOferta[, nColunaIPI] * mDistribuicao
+
+# Calculando a Matriz para ICMS
+mValorICMS <- mOferta[, nColunaICMS] * mDistribuicao
+
+# Calculando a Matriz para Outros Impostos
+mValorOI <- mOferta[, nColunaOI] * mDistribuicao
+
+# Calculando a Matriz para Margem de Comércio
+vVetorEntrada = mOferta[, nColunaMargemComercio]
+vMargem = c(89, 89)
+vPropMargem = vVetorEntrada[vMargem[1]:vMargem[2]] / sum(vVetorEntrada[vMargem[1]:vMargem[2]])
+mMargemComercio = vVetorEntrada * mDistribuicao
+
+# Distribuindo a Margem de Comércio
+mMargemDistribuida = colSums(mMargemComercio[1:(vMargem[1]-1), ]) + colSums(mMargemComercio[(vMargem[2]+1):nrow(mMargemComercio), ])
+mMargemComercio[vMargem[1]:vMargem[2], ] = t(t(vPropMargem))  %*% mMargemDistribuida * (-1)
+
+# Calculando a Matriz para Margem de Transporte
+vVetorEntrada <-mOferta[, nColunaMargemTransporte]
+vMargem <- c(90, 91)
+vPropMargem <- vVetorEntrada[vMargem[1]:vMargem[2]] / sum(vVetorEntrada[vMargem[1]:vMargem[2]])
+mMargemTransporte <- vVetorEntrada * mDistribuicao
+
+# Distribuindo a Margem de Transporte
+mMargemDistribuida <- colSums(mMargemTransporte[1:(vMargem[1]-1), ]) + colSums(mMargemTransporte[(vMargem[2]+1):nrow(mMargemTransporte), ])
+mMargemTransporte[vMargem[1]:vMargem[2], ] <- t(t(vPropMargem))  %*% mMargemDistribuida * (-1)
+
+# Gerando a Demanda Final sem exportação
+mDemandaFinalSemExportacao = mDemandaFinalSemEstoque
+mDemandaFinalSemExportacao[, nColunaExportacaoProdutos] = 0.0
+mDemandaFinalSemExportacao[, nColunaExportacaoServicos] = 0.0
+
+# Gerando o vetor do produto total sem exportação
+mConsumoTotalSemExportacao <- cbind(mConsumoIntermediario, mDemandaFinalSemExportacao)
+vTotalProduto = rowSums(mConsumoTotalSemExportacao)
+
+# Gerando a matriz de distribuição da importação
+mDistribuicaoImportacao <- mConsumoTotalSemExportacao / vTotalProduto
+mDistribuicaoImportacao[is.na(mDistribuicaoImportacao)] = 0
+
+# Gerando a Matriz de Impostos sobre Importação
+mValorII <- mOferta[, nColunaII] * mDistribuicaoImportacao
+mImportacao <- vImportacao[,] * mDistribuicaoImportacao
+
+# Gerando a matriz do Consumo Total a preço de mercado
+mConsumoTotalPrecoMercado = cbind(mConsumoIntermediario, mDemandaFinal)
+
+# Gerando a matriz do Consumo Total a preços básicos
+mConsumoTotalPrecoBase = mConsumoTotalPrecoMercado - mMargemComercio - mMargemTransporte - mValorIPI - mValorICMS - mValorOI - mImportacao - mValorII
+
+```
+  
+<br>
+<br>
+  
+## Calculando as Matrizes de Coeficientes Técnicos  
+  
+<p style="text-align: justify;">Para derivar o sistema de insumo-produto, geralmente são utilizadas duas hipóteses relacionadas ao modo de produção e participação das indústrias no mercado dos produtos. A primeira hipótese é quando se soluciona o modelo para captar as informações sobre as estruturas de insumos para produzir cada produto. A segunda diz respeito a tecnologia da indústria, que passa a ser característica das atividades, ou seja, a tecnologia está associada às atividades que produzem os produtos. Essa segunda hipótese assume que os produtos representam um percentual na produção de cada setor.</p>
+
+<p style="text-align: justify;">A hipótese da tecnologia baseada no produto, conforme descreve Guilhoto (2009), assume que o mix de produção de um setor industrial não pode ser alterado, no entanto sua participação no mercado de bens pode ser alterada. E a tecnologia baseada na indústria (setor) assume que o mix de produção de um determinado setor pode ser alterado, mantida constante sua participação no mercado de bens que este setor produz, situação que, ainda segundo o autor, fica mais perto da realidade nos setores da economia.</p>
+
+<p style="text-align: justify;">Na hipótese da tecnologia baseada na indústria, construímos a matriz (`mB`) de coeficientes técnicos de cada setor em relação a cada produto usado como insumo, conforme o código abaixo, assim como a matriz (`mD`) que determina a proporção de cada produto dos setores que o produzem.</p>
+  
+<p style="text-align: justify;">Dessa forma chegamos a matriz de Leontief, que determina a fotografia do fluxo circular da renda na economia. A matriz de Leontief é usada para calcular os efeitos diretos e indiretos de um aumento na demanda final sobre a produção total. Os coeficientes técnicos representam a quantidade de insumo necessário para produzir uma unidade de saída.</p>  
+  
+> <p>&alpha;<sub>ij</sub> =  Z<sub>ij</sub> / (&sum;<sup>n</sup><sub>j=1</sub> Z<sub>j</sub>)</p>  
+  
+<p style="text-align: justify;">O valor produzido na atividade "i" é consumido pela atividade "j" para produzir uma unidade monetária. Onde A = (αij) é a matriz de coeficientes técnicos, e Z (zij) a matriz de consumo intermediário.</p>  
+  
+```{r, warning=FALSE, message=FALSE}
+# Matriz de Usos, onde as linhas correspondem ao bem produzido pelo setor da respectiva coluna
+mU = mConsumoTotalPrecoBase[,1:nSetores]
+
+# Matriz de Usos setor x setor
+mE = mConsumoTotalPrecoBase[,(nSetores+1):ncol(mConsumoTotalPrecoBase)]
+
+# Matriz de importação Produto x Setor
+mImportacaoProdutoSetor = mImportacao[,1:nSetores]
+
+# Vetor de Produção Total (VBP), separado por setor (cada linha corresponde a um setor)
+vX = mVA[nLinhaVBP,]
+mXChapeu = diag(1/vX)
+
+# Matriz dos Coeficientes Técnicos de cada setor em relação a cada produto
+mB = mU %*% mXChapeu
+
+# Matriz de Produção
+mV = t(mProducao)
+
+# Vetor de Produção Total, por produto, de dimensão mx1  
+vQ = colSums(mV)
+
+# Matriz que determina a proporção, para cada produto, dos setores que o produzem
+mQChapeu = diag(1/vQ)
+mD = mV %*% mQChapeu
+
+# Matriz de coeficientes técnicos
+mA = mD %*% mB
+mY = mD %*% mE
+
+# Matriz de Uso de consumo intermediário, de dimensão nxn, onde cada valor corresponde ao que será usado de cada setor por setor no processo produtivo
+mZ = mD %*% mU
+
+# Matriz identidade correspondente ao numero de setores
+mI = diag(nSetores)
+
+# Matriz de Leontief
+mLeontief = solve(mI - mA)
+
+vDemandaTotal = rowSums(mZ) + rowSums(mY)
+nDemandaTotal = sum(vDemandaTotal)
+
+# Matriz do Total do Consumo Intermediário
+mTConsumoIntermediario = rbind(colSums(mValorII[,1:nSetores]),
+                              colSums(mValorIPI[,1:nSetores]),
+                              colSums(mValorICMS[,1:nSetores]),
+                              colSums(mValorOI[,1:nSetores]) )
+nLinhaVA=1
+
+# Vetor de Oferta
+vOfertaTotal = colSums(mZ) + colSums(mImportacao[,1:nSetores]) +
+               colSums(mTConsumoIntermediario) + mVA[nLinhaVA,]    
+nOfertaTotal = sum(vOfertaTotal)
+vDiferencas = vDemandaTotal - vOfertaTotal
+vDiferencaTotal = sum(vDiferencas)
+```
+  
+```{r nome dos setores e produtos, warning=FALSE, message=FALSE, echo=FALSE}
+dSheet = read.xlsx(sArquivoUsos,"CI", colNames = FALSE, rowNames = FALSE)
+lNomeSetores <- vector("list", nSetores)
+lNomeProdutos <- vector("list",nProdutos) 
+lNomeVA  <- vector("list",12)
+for (i in 1:nSetores) {
+  lNomeSetores[[i]] <- dSheet[3, 2 + i - 1]
+}
+
+for ( i in 1:nProdutos) {
+  lNomeProdutos[[i]] <-dSheet[3+i,1]
+}
+  
+dSheet = read.xlsx(sArquivoUsos,"VA", colNames = FALSE, rowNames = FALSE)
+for ( i in 1:12) {
+  lNomeVA[[i]] <-dSheet[3+i,1]
+}
+
+sColsLabel <- c(lNomeSetores)
+sRowsLabel <- c(lNomeProdutos)
+
+dfMip = as.data.frame(mZ)
+colnames(dfMip) = sColsLabel
+rownames(dfMip) = sColsLabel
+write.xlsx(dfMip, "teste.xlsx", rowNames=TRUE, colNames = TRUE, overwrite = TRUE)
+
+
+sRowsLabel <- c(lNomeSetores, "Oferta Nacional", "Importação", "II", "IPI", "ICMS", "OI", "Oferta Intermediária Total", lNomeVA)
+
+sColsLabel <- c(lNomeSetores, "Consumo Intermediário", "Exportação de produtos", "Exportação de serviços", "Consumo do Governo", "Consumo das ISFLSF", "Consumo das Famílias", "FBCF", "Variação do estoque", "Demanda Final", "Demanda Total")
+
+```
+  
+<br>
+<br>
+  
+## Calculando a Matriz Insumo-Produto  
+  
+<p style="text-align: justify;">A partir de agora podemos realizar os passos para calcular a matriz insumo-produto, fundamental para compreender as interações entre os setores da economia. Inicialmente, calculamos a matriz de oferta, que reflete a quantidade de insumos disponíveis em cada setor para a produção de bens e serviços. A oferta nacional é obtida somando os valores de consumo intermediário, importações e tributos sobre a produção. A matriz é composta pelos consumos intermediários de cada setor, a oferta nacional, as importações de cada setor, os tributos sobre a produção e a oferta total de cada setor.</p>  
+  
+<p style="text-align: justify;">Na sequência, construímos a matriz da demanda final, que representa o consumo final de bens e serviços pelos diferentes agentes econômicos. Isso inclui o consumo intermediário, as importações e os tributos incidentes sobre as transações finais. A matriz é composta pelos valores de Imposto sobre Importação (II), Imposto sobre Produtos Industrializados (IPI), Imposto sobre Circulação de Mercadorias e Serviços (ICMS), e Outros Impostos (OI), resultando na demanda total para cada setor.</p>  
+  
+<p style="text-align: justify;">Na sequência consolidamos todas as informações na matriz insumo-produto (MIP). A MIP é composta pela matriz de oferta de consumo intermediário, a oferta total de consumo intermediário, a matriz da demanda final, a oferta total da demanda final, a demanda total e as diferenças entre demanda e oferta.</p>  
+  
+```{r, warning=FALSE, message=FALSE}
+# Matriz de Oferta
+vOfertaNacional <- colSums(mZ)
+vOfertaTributos <- colSums(mTConsumoIntermediario)
+vMConsumoIntermdiario <- colSums(mImportacao[,1:nSetores])
+vOfertaConsumoIntermediario <- vOfertaNacional + vMConsumoIntermdiario + vOfertaTributos
+mOfertaConsumoIntermediario <- rbind(mZ, vOfertaNacional, vMConsumoIntermdiario, mTConsumoIntermediario,
+                                       vOfertaConsumoIntermediario, mVA)
+  
+# Matriz da Demanda Final
+vValorIIDemandaFinal = colSums(mValorII[,(nSetores+1):ncol(mConsumoTotalPrecoBase)])
+vValorIPIDemandaFinal = colSums(mValorIPI[,(nSetores+1):ncol(mConsumoTotalPrecoBase)])
+vValorICMSDemandaFinal = colSums(mValorICMS[,(nSetores+1):ncol(mConsumoTotalPrecoBase)])
+vValorOIDemandaFinal = colSums(mValorOI[,(nSetores+1):ncol(mConsumoTotalPrecoBase)])
+mTDemandaFinal = rbind(vValorIIDemandaFinal, vValorIPIDemandaFinal,vValorICMSDemandaFinal, vValorOIDemandaFinal)
+vMDemandaFinal <- colSums(mImportacao[,(nSetores+1):ncol(mConsumoTotalPrecoBase)])  
+  
+mTotalDemandaConsumoIntermediario <- matrix(rowSums(mOfertaConsumoIntermediario), nrow = nrow(mOfertaConsumoIntermediario), ncol = 1 )
+  
+vTotalLinhaDemandaNacional <- colSums(mY)
+mDemanda <- rbind(mY, vTotalLinhaDemandaNacional, vMDemandaFinal, mTDemandaFinal)
+vTotalLinhaDemandaFinal <- colSums(mDemanda) 
+mDemandaFinal <- rbind(mDemanda, vTotalLinhaDemandaFinal, matrix(0, nrow = 12, ncol = 7))
+  
+vTotalDemandaFinal <- rowSums(mDemandaFinal)
+vDemandaTotal <- mTotalDemandaConsumoIntermediario + vTotalDemandaFinal
+mMIP <- cbind(mOfertaConsumoIntermediario, mTotalDemandaConsumoIntermediario, mDemandaFinal,
+                vTotalDemandaFinal, vDemandaTotal)
+
+# Definindo os nomes das linhas e colunas
+rownames(mMIP) = sRowsLabel
+colnames(mMIP) = sColsLabel
+
+# Convertendo a matriz em um data frame
+dfMIP = as.data.frame(mMIP)
+
+# Usando a função kable
+kable(dfMIP) %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  scroll_box(width = "100%", height = "400px") 
+
+```
+  
+```{r exportando excel, warning=FALSE, message=FALSE, echo=FALSE}
+# Definindo o caminho de saída
+sCaminhoOutput <- "Outputs/"
+nome_arquivo <- paste0("MIP_", as.character(nAnoMip), "_", as.character(nSetores), "x", as.character(nSetores), "_MetodoGuilhoto.xlsx")
+  
+# Criação do arquivo Excel
+wb <- createWorkbook()
+addWorksheet(wb, "MIP")
+  
+# Converter a matriz 'mMIP' em um data frame
+df <- as.data.frame(mMIP)
+rownames(df) <- sRowsLabel
+colnames(df) <- sColsLabel
+  
+# Escrever no arquivo Excel
+writeData(wb, sheet = "MIP", x = df,rowNames=TRUE, colNames = TRUE)
+  
+# Salvar o arquivo Excel
+saveWorkbook(wb, file = paste0(sCaminhoOutput, nome_arquivo), overwrite = TRUE)
+  
+```
+  
+```{r modelo fechado, warning=FALSE, message=FALSE, echo=FALSE}
+# Calculo do Modelo Fechado
+nLinhaRendaTrabalho <- 2
+nColunaFamilias <- 4
+nlinhaRendimentoMisto <- 9
+vDemandaFamilias <- matrix(mY[, nColunaFamilias], nrow = nSetores, ncol = 1)
+
+vRendaTrabalho <- matrix(mVA[nLinhaRendaTrabalho, ], nrow = 1, ncol = nSetores) + matrix(mVA[nlinhaRendimentoMisto, ], nrow = 1, ncol = nSetores) * 0.41
+vAuxZero <- matrix(0, nrow = 1, ncol = 1)
+
+#vAuxZero <- sum(vDemandaFamilias)
+mZBarr <- rbind(mZ, vRendaTrabalho)
+mAux <- rbind(vDemandaFamilias, vAuxZero)
+mZBarr <- cbind(mZBarr, mAux)
+
+vAuxZero <- sum(vRendaTrabalho)
+vVBPBarr <- cbind(matrix(vX, ncol = nSetores), vAuxZero)
+
+mABarr <- matrix(0, nrow = nSetores + 1, ncol = nSetores + 1)
+mABarr[, ] <- mZBarr[, ] / vVBPBarr[1, ]
+
+for (i in 1:(nSetores + 1)) {
+  mABarr[i, ] <- mZBarr[i, ] / vVBPBarr[1, ]
+
+}
+
+mIBarr <- diag(nSetores + 1)
+mLeontiefBarr <- solve(mIBarr - mABarr)
+```
+
+```{r lendo nomes no modelo fechado, warning=FALSE, message=FALSE, echo=FALSE}
+dSheet = read.xlsx(sArquivoUsos,"CI", colNames = FALSE, rowNames = FALSE)
+lNomeSetores <- vector("list", nSetores)
+
+for (i in 1:nSetores) {
+  lNomeSetores[[i]] <- dSheet[3, 3 + i - 1]
+  lNomeSetores[[i]] <- substr(lNomeSetores[[i]],7,50)
+}
+
+```
+  
+<br>
+<br>
+  
+## Analisando os Multiplicadores de Impacto  
+  
+<p style="text-align: justify;">Os multiplicadores de impacto são uma ferramenta essencial na análise econômica, pois permitem entender como as variações na produção de um setor afetam a economia como um todo. Nesta seção, examinamos os multiplicadores de impacto derivados da análise da matriz de Leontief.</p>   
+  
+<p style="text-align: justify;">Os efeitos multiplicadores de produção são fundamentais para entender como choques em um setor específico reverberam por toda a economia. Aqui, apresentamos diferentes tipos de multiplicadores e suas interpretações:</p>  
+  
+<ul>
+<li><strong>Total</strong>: Reflete o efeito cumulativo de um aumento na produção de um setor sobre toda a economia, levando em conta tanto os efeitos diretos quanto os indiretos.</li>
+<li><strong>Simples</strong>: Representa o efeito direto da produção de um setor sobre a produção total.</li>
+<li><strong>Induzido</strong>: Indica o impacto induzido pela variação na produção de um setor, considerando as interações interindustriais. Exprimem-se através das compras realizadas pelos consumidores empregados, direta e indiretamente, através das atividades econômicas beneficiadas pela variação nos componentes da demanda final.</li>
+<li><strong>Direto</strong>: Mostra o efeito direto da produção de cada setor sobre si mesmo. Incluem aquelas categorias econômicas diretamente afetadas pelas atividades mobilizadas pela variação no nível de demanda final.</li>
+<li><strong>Indireto</strong>: Calculado subtraindo o efeito direto do efeito simples, evidenciando o impacto indireto nas demais indústrias. Aponta os efeitos produzidos dentro da cadeia produtiva do setor.</li>
+</ul>  
+
+<p style="text-align: justify;">A análise dos multiplicadores de impacto é crucial para identificar os setores que têm o maior impacto na economia. Isso pode ajudar os formuladores de políticas a direcionar seus esforços para os setores que geram o maior retorno econômico. Destacamos que o efeito total é a combinação do efeito simples e do efeito induzido.</p>  
+
+```{r multiplicadores de impacto, warning=FALSE, message=FALSE}
+vMultTotalProducao <- colSums(mLeontiefBarr)
+vMultSimplesProducao <- colSums(mLeontief)
+vMultTotalProducaoTrunc <- colSums(mLeontiefBarr[1:nSetores, 1:nSetores])
+vEfeitoInduzido <- vMultTotalProducao[1:nSetores] - vMultSimplesProducao
+#vEfeitoInduzido <- vMultTotalProducaoTrunc - vMultSimplesProducao
+vEfeitoDireto <- colSums(mA)
+vEfeitoIndireto <- vMultSimplesProducao - vEfeitoDireto
+
+if (!require(stargazer)) {
+  install.packages("stargazer")
+  library(stargazer)
+}
+
+mMultiplicadoresProducao <- cbind(vMultTotalProducao[1:nSetores], 
+                                  vMultSimplesProducao, vEfeitoInduzido, 
+                                  vEfeitoDireto, vEfeitoIndireto)
+
+colnames(mMultiplicadoresProducao) <- c("Total", "Simples",  
+                                        "Induzido", "Direto", 
+                                        "Indireto")
+
+for (i in 1:nSetores) {
+  rownames(mMultiplicadoresProducao)[i] <- substr(lNomeSetores[i], 1, 60)
+}
+
+kable(mMultiplicadoresProducao) %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  scroll_box(width = "100%", height = "400px") 
+
+```
+
+```{r lendo arquivo excel, warning=FALSE, message=FALSE, echo=FALSE}
+sCaminhoInputMip <- "Outputs/"
+sNomeArquivoMIP <- paste0("MIP_", nAnoMip, "_", nSetores, "x", nSetores, "_MetodoGuilhoto.xlsx")
+sNomeArquivo = paste0(sCaminhoInputMip,sNomeArquivoMIP )
+sNomePasta = "MIP"
+dSheet <- read.xlsx(sNomeArquivo, sheet = sNomePasta, colNames = FALSE, rowNames = FALSE)
+ds = dSheet[2:71, 2:62]
+mZ = dSheet[2:(2 + nSetores - 1), 2:(2 + nSetores - 1)]
+```
+
+```{r calculando a MIP, warning=FALSE, message=FALSE, echo=FALSE}
+mZ                     <- apply(as.matrix.noquote(ds[1:nSetores, 1:nSetores]), 2, as.numeric)
+vMConsumoIntermediario <- apply(as.matrix.noquote(ds[nSetores+2 , 1:nSetores]), 2, as.numeric)
+mTConsumoIntermediario <- apply(as.matrix.noquote(ds[(nSetores+3):(nSetores+6) , (1:nSetores)]), 2, as.numeric)
+mVA                    <- apply(as.matrix.noquote(ds[(nSetores+8):(nSetores+19) , (1:nSetores)]), 2, as.numeric)
+mDemandaFinal          <- apply(as.matrix.noquote(ds[1:nSetores,(nSetores+2):(nSetores+2+nColunasDemandaFinal)]), 2, as.numeric)
+vMDemandaFinal         <- apply(as.matrix.noquote(ds[nSetores+2,(nSetores+2):(nSetores+2+nColunasDemandaFinal)]), 2, as.numeric)
+vTDemandaFinal         <- apply(as.matrix.noquote(ds[(nSetores+3):(nSetores+6),(nSetores+2):(nSetores+2+nColunasDemandaFinal)]), 2, as.numeric)
+
+
+lNomeSetores <- vector("list", nSetores)
+lNomesCurtos <- vector("list", nSetores)
+for (i in 1:nSetores) {
+  lNomeSetores[[i]] <- dSheet[(1+i), 1]
+  lNomesCurtos[[i]] <- substr(dSheet[(1+i), 1],1,5)
+}
+
+
+
+lNomeImpostos <- vector("list", 4)
+for (i in 1:4) {
+  lNomeImpostos[[i]] <- dSheet[(nSetores+3+i), 1]
+}
+
+lNomeVA <- vector("list", 4)
+for (i in 1:nLinhasVA) {
+  lNomeVA[[i]] <- dSheet[(nSetores+8+i), 1]
+}
+
+```
+  
+```{r novamente matriz de leonfief modelo aberto, warning=FALSE, message=FALSE, echo=FALSE}
+mY = mDemandaFinal
+# Cálculo da Matriz de Leontief
+vX = mVA[nLinhaVBP,]
+
+mXChapeu <- diag(1/vX)
+
+mA <- mZ %*% mXChapeu
+mI <- diag(nSetores)
+mLeontief <- solve(mI - mA)
+mB <- mLeontief
+```
+  
+```{r novamente matriz de leonfief modelo fechado, warning=FALSE, message=FALSE, echo=FALSE}
+nLinhaRendaTrabalho <- 2
+nColunaFamilias <- 5
+nlinhaRendimentoMisto <- 9
+vDemandaFamilias <- matrix(mY[, nColunaFamilias], nrow = nSetores, ncol = 1)
+
+vRendaTrabalho <- matrix(mVA[nLinhaRendaTrabalho, ], nrow = 1, ncol = nSetores) 
+#          + matrix(mVA[nlinhaRendimentoMisto, ], nrow = 1, ncol = nSetores) * 0.41
+vAuxZero <- matrix(0, nrow = 1, ncol = 1)
+#vAuxZero <- sum(vDemandaFamilias)
+mZBarr <- rbind(mZ, vRendaTrabalho)
+mAux <- rbind(vDemandaFamilias, vAuxZero)
+mZBarr <- cbind(mZBarr, mAux)
+
+vAuxZero <- sum(vRendaTrabalho)
+vVBPBarr <- cbind(matrix(vX, ncol = nSetores), vAuxZero)
+
+mABarr <- matrix(0, nrow = nSetores + 1, ncol = nSetores + 1)
+mABarr[, ] <- mZBarr[, ] / vVBPBarr[1, ]
+
+for (i in 1:(nSetores + 1)) {
+  mABarr[i, ] <- mZBarr[i, ] / vVBPBarr[1, ]
+  
+}
+
+mIBarr <- diag(nSetores + 1)
+mLeontiefBarr <- solve(mIBarr - mABarr)
+```
+  
+<br>
+<br>
+  
+## Calculo dos Índices de Ligação HR  
+  
+<p style=“text-align: justify;”>Os índices de ligação de Hirschman-Rasmussen (HR) são uma ferramenta útil para identificar setores-chave em uma economia. Esses índices medem o grau de interdependência entre os setores, permitindo identificar aqueles que têm um impacto significativo na economia como um todo.</p>
+
+<p style=“text-align: justify;”>Os índices de ligação HR são calculados com base nos coeficientes técnicos da matriz insumo-produto. Eles são divididos em índices de ligação para trás e para frente:</p>
+
+* **Ligação para trás:** Mede o impacto de um aumento na demanda final de um setor sobre a produção de seus fornecedores de insumos. Um setor tem uma forte ligação para trás se um aumento em sua produção requer um aumento significativo na produção de seus fornecedores de insumos.  
+* **Ligação para frente:** Mede o impacto de um aumento na produção de um setor sobre seus clientes. Um setor tem uma forte ligação para frente se um aumento em sua produção leva a um aumento significativo na produção dos setores que usam seus produtos como insumos.  
+
+<br>
+  
+<div style="text-align: center;">
+  <table style="margin: auto; width:50%; border: 1px solid black; border-collapse: collapse;">
+    <tr style="border: 1px solid black;">
+      <th style="border: 1px solid black; padding: 15px; text-align: left;">Índice de ligação</th>
+      <th style="border: 1px solid black; padding: 15px; text-align: left;">ILF > 1</th>
+      <th style="border: 1px solid black; padding: 15px; text-align: left;">ILF < 1</th>
+    </tr>
+    <tr style="border: 1px solid black;">
+      <td style="border: 1px solid black; padding: 15px; text-align: left;">ILT > 1</td>
+      <td style="border: 1px solid black; padding: 15px; text-align: left;">Setor-chave</td>
+      <td style="border: 1px solid black; padding: 15px; text-align: left;">Depende da oferta dos demais setores</td>
+    </tr>
+    <tr style="border: 1px solid black;">
+      <td style="border: 1px solid black; padding: 15px; text-align: left;">ILT < 1</td>
+      <td style="border: 1px solid black; padding: 15px; text-align: left;">Depende da demanda dos demais setores</td>
+      <td style="border: 1px solid black; padding: 15px; text-align: left;">Independente</td>
+    </tr>
+  </table>
+</div>
+
+<br>
+  
+```{r, warning=FALSE, message=FALSE}
+vMediaLinhasB <- apply(mB, 1, mean)
+vMediaColunasB <- apply(mB, 2, mean)
+vMediaTodosElementosB <- sum(mB) / nSetores^2
+
+# cálculo do Uj
+vIndiceLigacaoParaTras <- vMediaColunasB / vMediaTodosElementosB
+# cálculo do Ui
+vIndiceLigacaoParaFrente <- vMediaLinhasB / vMediaTodosElementosB
+
+if (!require(stargazer)) {
+  install.packages("stargazer")
+  library(stargazer)
+}
+
+
+mIndices  <- cbind(vIndiceLigacaoParaTras, vIndiceLigacaoParaFrente)
+colnames(mIndices) <- c("Índice de ligação para Trás", "Índice de ligação para Frente")
+rownames(mIndices) <- lNomeSetores
+
+kable(mIndices) %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  scroll_box(width = "100%", height = "400px") 
+
+
+```
+  
+<br>
+<br>
+  
+## Calculo da Matriz de Ghosh  
+  
+<p style=“text-align: justify;”>A matriz de Ghosh é uma extensão da matriz de Leontief e é usada para analisar os efeitos de mudanças na produção sobre a demanda final. Ela é baseada na hipótese de que a estrutura de alocação de produção é fixa, ou seja, a proporção de produção de um setor que é vendida para outro setor é constante.</p>
+
+<p style=“text-align: justify;”>A matriz de Ghosh é calculada da seguinte forma:</p>
+
+> <p>B<sub>ij</sub> = X<sub>j</sub> / X<sub>i</sub></p>
+  
+<p style=“text-align: justify;”>Onde B<sub>ij</sub> é o coeficiente técnico de Ghosh, X<sub>j</sub> é a produção total do setor j e X<sub>i</sub> é a produção total do setor i. A matriz de Ghosh é então dada por:</p>
+
+> <p>B = (X<sub>j</sub> / X<sub>i</sub>) * A</p>
+
+<p style=“text-align: justify;”>Onde A é a matriz de coeficientes técnicos de Leontief. A matriz de Ghosh é usada para calcular os multiplicadores de Ghosh, que medem o impacto de um aumento na produção de um setor sobre a demanda final.</p>
+  
+```{r, warning=FALSE, message=FALSE}
+# Cálculo da matriz de coeficientes técnicos pelo lado da oferta
+mVBPDiagonal <- diag(1 / vX)
+mF <- mVBPDiagonal %*% mZ
+mG <- solve(diag(nSetores) - mF)
+
+```
+  
+<br>
+<br>
+  
+## Calculo dos índices de ligação de Ghosh pelo lado da oferta  
+  
+<p style="text-align: justify;">Os índices de ligação de Ghosh pelo lado da oferta são fundamentais para entender como choques em um setor específico reverberam por toda a economia. Aqui, apresentamos diferentes tipos de índices de ligação e suas interpretações:</p>  
+  
+<ul>
+<li><strong>Para Trás</strong>: Mede o impacto de um aumento na oferta de um setor sobre a demanda final. Um setor tem uma forte ligação para trás se um aumento em sua oferta requer um aumento significativo na demanda final.</li>
+<li><strong>Para Frente</strong>: Mede o impacto de um aumento na oferta de um setor sobre a produção dos setores que usam seus produtos como insumos. Um setor tem uma forte ligação para frente se um aumento em sua oferta leva a um aumento significativo na produção dos setores que usam seus produtos como insumos.</li>
+</ul>
+  
+```{r, warning=FALSE, message=FALSE}
+# Cálculo das médias
+vMediaLinhasG <- apply(mG, 1, mean)
+vMediaColunasG <- apply(mG, 2, mean)
+vMediaTodosElementosG <- sum(mG) / nSetores^2
+
+# Cálculo do Ugj
+vIndiceLigacaoGhoshParaTras <- vMediaColunasG / vMediaTodosElementosG
+# Cálculo do Ugi
+vIndiceLigacaoGhoshParaFrente <- vMediaLinhasG / vMediaTodosElementosG
+
+
+mIndicesGhosh  <- cbind(vIndiceLigacaoGhoshParaTras, vIndiceLigacaoGhoshParaFrente)
+colnames(mIndicesGhosh) <- c("Índice de ligação de Ghosh para Trás", 
+                             "Índice de ligação de Ghosh para Frente")
+rownames(mIndicesGhosh) <- lNomeSetores
+
+kable(mIndicesGhosh) %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  scroll_box(width = "100%", height = "400px") 
+
+```
+  
+<br>
+<br>
+
+## Calculo dos Coeficientes de variação  
+  
+<p style="text-align: justify;">Os coeficientes de variação são uma medida estatística que descreve a dispersão relativa de uma variável. Eles são úteis para comparar a variabilidade de diferentes setores, pois levam em conta tanto a média quanto o desvio padrão. Nesta seção, calculamos os coeficientes de variação para os setores da economia com base na matriz de Leontief.</p>  
+
+<p style="text-align: justify;">Os coeficientes de variação são calculados da seguinte forma:</p>
+
+<ul>
+<li><strong>vVj</strong>: coeficiente de variação para cada setor, calculado como o desvio padrão das linhas da matriz de Leontief dividido pela média das colunas.</li>
+<li><strong>vVi</strong>: coeficiente de variação para cada setor, calculado como o desvio padrão das colunas da matriz de Leontief dividido pela média das linhas.</li>
+</ul>
+  
+```{r, warning=FALSE, message=FALSE}
+vVj <- apply(mLeontief, 1, sd, na.rm=TRUE) / vMediaColunasB
+vVi <- apply(mLeontief, 2, sd, na.rm=TRUE) / vMediaLinhasB
+
+
+mCV  <- cbind(vVj, vVi)
+colnames(mCV) <- c("vVj", 
+                             "vVi")
+rownames(mCV) <- lNomeSetores
+
+kable(mCV) %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  scroll_box(width = "100%", height = "400px") 
+
+
+```
+  
+<br>
+<br>
+  
+## Calculo dos índices puros de ligação  
+  
+<p style="text-align: justify;">Os Índices Puros de Ligação permitem entender como as variações na produção de um setor afetam a economia como um todo, de modo a explicitar como choques em um setor específico reverberam sobre os outros setores. Nesta seção, calculamos os Índices Puros de Ligação com base na matriz de Leontief.</p>    
+  
+<ul>
+<li><strong>Índice Puro de ligação Normalizado para Trás</strong>: mede o impacto da produção do setor j sobre o restante da economia, excluindo a autodemanda de insumos e o retorno de outros setores econômicos ao setor i=j=s.</li>
+<li><strong>Índice Puro de ligação Normalizado para Frente</strong>: mede o impacto da produção do restante da economia sobre o setor i=j=s.</li>
+<li><strong>Índice Puro Total de ligações Normalizado</strong>: Este índice é a soma dos índices de ligação para trás e para frente, fornecendo uma medida do impacto total da produção de um setor sobre a economia como um todo.</li>
+</ul>
+  
+```{r, warning=FALSE, message=FALSE}
+# Criando lista para ajudar no fatiamento
+vLista <- rep(TRUE, nSetores)
+
+# Criando matriz para armazenar os componentes
+mIndicePuroLigacao <- matrix(0, nrow=nSetores, ncol=3)
+
+# Remodelando a matriz de demanda (da matriz para o vetor)
+mDemand <- matrix(c(rowSums(mY)), ncol=1)
+
+# Criação de índices GHS; para informações, ver Vale, Perobelli, 2020, p. 91-93
+# Como existe uma composição matricial (ver eq.39), usamos três loops
+# Com os três ifs, podemos ter certeza de calcular Ajj corretamente
+
+for (s in 1:nSetores) {
+  # Área Ajj
+  # Vetor lógico para determinar quais setores são o "resto da economia"
+  # (setor s -> FALSE)
+  vDemaisSetores <- vLista
+  vDemaisSetores[s] <- FALSE
+  
+  # Demanda do setor j e do restante da economia
+  nYj <- mDemand[s, ]
+  vYr <- mDemand[vDemaisSetores, , drop=FALSE]
+  
+  # Coeficiente técnico direto do setor i = j em relação a si mesmo
+  nAjj <- mA[s, s]
+  # Coeficiente técnico indireto e direto do setor i = j em relação a si mesmo
+  nDj <- 1 / (1 - nAjj)
+  
+  # Coeficientes técnicos diretos de vendas realizadas por setor i=j=s para o resto da economia
+  vAjr <- mA[s, vDemaisSetores, drop=FALSE]
+  # Coeficientes diretos de insumos comprados pelo setor i=j=s do resto da economia
+  vArj <- mA[vDemaisSetores, s, drop=FALSE]
+  # Coeficientes técnicos diretos do resto da economia
+  mArr <- mA[vDemaisSetores, vDemaisSetores]
+  
+  # Matriz de Leontief considerando apenas o resto da economia
+  mI <- diag(nSetores - 1)
+  mDr <- solve(mI - mArr)
+  
+  # Indicador PBL: impacto da produção do setor j sobre o restante da economia
+  # excluindo autodemanda de insumos e o retorno de outros setores econômicos ao setor i=j=s
+  nPBL <- sum(mDr %*% vArj %*% nDj %*% nYj)
+  # Indicador PFL: impacto da produção do restante da economia sobre o setor i=j=s
+  nPFL <- sum(nDj * vAjr %*% mDr %*% vYr)
+  nPTL <- nPBL + nPFL
+  
+  IPuros <- c(nPBL, nPFL, nPTL)
+  
+  # Adicionando índices calculados à tabela agregada
+  mIndicePuroLigacao[s, ] <- IPuros
+}
+
+# Normalizando índices
+# Dividindo o índice de cada setor pelo índice médio da economia para ver quais são os mais importantes
+# Se > 1, o setor é chave/acorrentado ao resto da economia,
+# mesmo levando em consideração seu nível de produção
+mIndicePuroLigacaoMedia <- colMeans(mIndicePuroLigacao)
+# Dividindo todos os indicadores pela média desse indicador
+mIndicePuroLigacaoNormal <- mIndicePuroLigacao / mIndicePuroLigacaoMedia
+
+mIndicesPuros  <- mIndicePuroLigacaoNormal
+colnames(mIndicesPuros) <- c("Índice Puro de ligação Normalizado para Trás", 
+                             "Índice Puro de ligação Normalizado para Frente",
+                             "Índice Puro Total de ligações Normalizado")
+rownames(mIndicesPuros) <- lNomeSetores
+
+kable(mIndicesPuros) %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  scroll_box(width = "100%", height = "400px") 
+
+```
+  
+<br>
+<br>
+
+# Analisando os resultados  
+  
+<p style="text-align: justify;">Agora analisaremos os resultados obtidos para o setor de *Transporte, Armazenamento e Correios* com base nas métricas econômicas calculadas anteriormente.</p>  
+
+<p style="text-align: justify;">Começamos com a análise dos Multiplicadores de Impacto. Os resultados mostram que *um aumento de uma unidade na produção do setor resultou em um aumento de 2.041999 unidades na produção total* da economia. Isso indica que o setor de logística aqui caracterizado teve um impacto significativo na economia como um todo, com um *efeito direto de 0.3520429* e um *efeito indireto de 1.245103*. O efeito induzido verificado ainda foi de *0.4448531*, indicando que um aumento na produção deste setor também aumentou a produção total da economia devido às compras realizadas pelos consumidores empregados, direta e indiretamente, através das atividades econômicas beneficiadas pela variação nos componentes da demanda final no período analisado.</p>
+
+<p style="text-align: justify;">Em seguida analisamos os *Índices de Ligação Hirschman & Ramussen*. O índice de ligação para trás para o setor foi de *1.0329671*, indicando que um aumento na demanda final deste setor resultou em um aumento significativo na produção de seus fornecedores de insumos. O índice de ligação para frente foi de *2.5292165*, sugerindo que um aumento na produção deste setor levou a um aumento significativo na produção dos setores que usam seus produtos como insumos. Isso indica que o setor de *Transporte, Armazenamento e Correios* teve uma forte ligação tanto para trás quanto para frente, traduzindo uma forte interligação com outros setores da economia.</p>  
+
+<p style="text-align: justify;">Analisamos também os índices de ligação de *Ghosh* pelo lado da oferta. O índice de ligação para trás para o setor de *Transporte, Armazenagem e Correio* foi de *1.5845223*, indicando que *um aumento de uma unidade na oferta deste setor resultou em um aumento de 1.5845223 unidades na demanda final*. E o índice de ligação para frente foi de *1.2766630*, indicando que um aumento de uma unidade na oferta do setor de logística surte impacto de *1.2766630* na produção dos demais setores que utilizam dos serviços de *Transporte, Armazenagem e Correios*. Isso reflete tanto os efeitos diretos quanto os indiretos do aumento da oferta no setor de logística apontado aqui pelo que foi agregado em *Transporte, Armazenagem e Correio*.</p>  
+
+<p style="text-align: justify;">Acerca ainda dos coeficientes de variação, os resultados mostraram que *vVj* para o setor foi de *4.245396*, e *vVi* foi de *1.808585*, o que significa que houve uma variação significativa na oferta e demanda deste setor em relação à média, sugerindo que este setor pode ter sido significativamente sensível a choques econômicos no período analisado.</p>
+
+<p style="text-align: justify;">Por fim calculamos os Índices Puros de Ligação para o setor de *Transporte, Armazenagem e Correio*. Os resultados mostram que o *Índice Puro de ligação Normalizado para Trás* para o setor foi de *1.3940978*, o *Índice Puro de ligação Normalizado para Frente* foi de *4.3905463* e o *Índice Puro Total de ligações Normalizado* foi de *5.7846441*. Isso indica que houve uma ligação significativa entre este setor e o restante da economia, tanto em termos de impacto da produção sobre o restante da economia, quanto do impacto da produção do restante da economia sobre o setor.</p>
+  
+<br>
+<br>
+  
+# Conclusão  
+  
+<p style="text-align: justify;">Em conclusão, este estudo forneceu uma análise detalhada do impacto do setor de Transporte, Armazenagem e Correio na economia brasileira em 2020, utilizando a metodologia de análise insumo-produto. Os resultados indicam que o setor teve um impacto significativo na economia como um todo, com fortes ligações tanto para trás quanto para frente. Isso sugere que o setor de logística desempenha um papel crucial na economia brasileira, facilitando o comércio e a produção em outros setores.</p>
+
+<p style=“text-align: justify;”>Dada a importância do setor de logística e o impacto significativo da pandemia de COVID-19 em 2020, seria interessante realizar estudos comparativos de outros anos para analisar como a pandemia afetou o setor. Isso poderia envolver a comparação dos índices de ligação, multiplicadores de impacto e coeficientes de variação antes, durante e após a pandemia. Tal análise poderia fornecer insights valiosos sobre a resiliência do setor de logística em face de choques econômicos e ajudar a informar estratégias para fortalecer o setor no futuro.</p>
+
+<p style=“text-align: justify;”>Além disso, seria útil explorar como as mudanças no setor de logística durante a pandemia afetaram outros setores da economia brasileira. Por exemplo, o aumento do comércio eletrônico durante a pandemia provavelmente aumentou a demanda por serviços de logística, enquanto as restrições de viagem podem ter afetado o transporte de passageiros. Compreender essas interações complexas pode ajudar a informar políticas públicas e estratégias de negócios para mitigar os impactos negativos de futuras crises e aproveitar as oportunidades emergentes.</p>
+  
+<br>
+<br>
+<br>
+<br>
